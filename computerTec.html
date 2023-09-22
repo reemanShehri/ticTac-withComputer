@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+      margin-top: 20px;
+    }
+    .cell {
+        margin-left: 100px;
+        background-color: rgb(182, 154, 209);
+      width: 100%;
+      height: 100px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 2em;
+      border: 1px solid black;
+      cursor: pointer;
+
+      
+    }
+    .cell:hover{
+        background-color: gray;
+
+    }
+    .v{
+        width: 100%;
+        height: 50px;
+        background-color: rgb(210, 162, 162);
+    }
+  </style>
+</head>
+<body>
+  <h1 class="v"><center>Tic Tac Toe</center></h1>
+  <div class="board" id="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+  </div>
+<script>
+
+const board = document.getElementById('board');
+const cells = document.querySelectorAll('.cell');
+
+const winCombination = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
+
+let playerTurn = true;
+
+// Function to check if a player has won
+function checkWin(player) {
+  return winCombination.some(combination =>
+    combination.every(index => cells[index].textContent === player)
+  );
+}
+
+// Function to check if the board is full
+function checkTie() {
+  return [...cells].every(cell => cell.textContent !== '');
+}
+
+// Function to handle the computer's move
+function computerMove() {
+  if (!playerTurn) {
+    const emptyCells = [...cells].filter(cell => cell.textContent === '');
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    emptyCells[randomIndex].textContent = 'O';
+
+    playerTurn = true;
+
+    if (checkWin('O')) {
+      setTimeout(() => alert('Computer Wins!'), 10);
+      resetBoard();
+    } else if (checkTie()) {
+      setTimeout(() => alert('It\'s a Tie!'), 10);
+      resetBoard();
+    }
+  }
+}
+
+// Function to reset the board
+function resetBoard() {
+  cells.forEach(cell => cell.textContent = '');
+}
+
+// Event listener for player's move
+board.addEventListener('click', event => {
+  const cell = event.target;
+  const index = cell.dataset.index;
+
+  if (playerTurn && cell.textContent === '') {
+    cell.textContent = 'X';
+
+    if (checkWin('X')) {
+      setTimeout(() => alert('You Win!'), 10);
+      resetBoard();
+    } else if (checkTie()) {
+      setTimeout(() => alert('It\'s a Tie!'), 10);
+      resetBoard();
+    } else {
+      playerTurn = false;
+      setTimeout(computerMove, 500); // Add a slight delay for computer move
+    }
+  }
+});
+
+
+</script>
+</body>
+</html>
